@@ -1,0 +1,163 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+ul[class],
+ol[class] {
+  padding: 0;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul[class],
+ol[class],
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+img {
+    max-width: 100%;
+    display: block;
+  }
+
+ul[class],
+ol[class] {
+  list-style:none;
+}
+body{
+    font-family: 'Montserrat', sans-serif;
+}
+.header{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+	justify-content: space-around;
+}
+.search{
+  position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+	justify-content: space-around;
+}
+.search-input{
+  position: relative;
+  height: 30px;
+  background: rgb(0, 0,0,0.5);
+  outline: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+  margin-left: 40px;
+  padding-left: 5px;
+}
+.search-input::placeholder{
+  font-size: 16px;
+ color:white;
+  
+}
+.mic{
+  background: url(../img/mic_85981.svg) no-repeat center center;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 75px;
+  top: 0;
+  bottom: 0;
+  left: auto;
+  margin: auto;
+  text-align: center;
+  transition: .5s;
+  border-radius: 50%;
+ z-index: 1000;
+
+}
+.mic:hover{
+  cursor: pointer;
+}
+main{
+  margin-top: 50px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+	justify-content: space-around;
+	
+}
+.container-weather{
+    width: 45%;
+    height: 500px;
+    background: rgb(0, 0,0,0.5);
+    color: seashell;
+    border-radius: 5px;
+}
+.city-time{
+    text-align: start;
+}
+.city{
+    font-size: 40px;
+   
+}
+.today{
+    display: grid;
+grid-template-columns: repeat(6, 1fr);
+grid-template-rows: repeat(6, 1fr);
+grid-column-gap: 0px;
+grid-row-gap: 0px;
+height: 400px;
+}
+.today-icon{
+    width:200px;
+    height:200px;
+     margin:auto;
+     
+}
+.temp{
+    font-size: 200px;
+    grid-area: 1 / 1 / 5 / 4; 
+    margin:auto;
+    font-weight: 700;
+}
+.today-icon{
+    grid-area: 1 / 4 / 3 / 7;
+}
+.today-weather{
+    grid-area: 3 / 4 / 5 / 7;
+}
+.days1{
+grid-area: 5 / 1 / 7 / 3;
+    
+}
+.days2{
+    grid-area: 5 / 3 / 7 / 5; 
+}
+.days3{
+    grid-area: 5 / 5 / 7 / 7; 
+}
+.container-map{
+    width: 45%;
+    background: rgb(0, 0,0,0.5);
+    color: seashell;
+    display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-around;
+	align-items: center;
+	align-content: stretch;
+    border-radius: 5px;
+}
+.mapboxgl-map{
+    box-sizing: 5px;
+    -webkit-clip-path: polygon(0% 0%, 100% 0, 100% 75%, 75% 75%, 75% 100%, 50% 75%, 0% 75%);
+    clip-path: polygon(0% 0%, 100% 0, 100% 75%, 75% 75%, 75% 100%, 50% 75%, 0% 75%);
+}
