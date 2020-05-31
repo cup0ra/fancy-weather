@@ -1,11 +1,12 @@
-const ru = require("../lang/ru.json");
-const en = require("../lang/en.json");
-const be = require("../lang/be.json");
+/* eslint-disable no-param-reassign */
+const ru = require("../i18n/ru.json");
+const en = require("../i18n/en.json");
+const be = require("../i18n/be.json");
 
 class Translator {
   constructor(language) {
     this.lang = language;
-    this.elements = document.querySelectorAll ("[data-i18n]"); 
+    this.elements = document.querySelectorAll ("[data-i18n]");
 }
 
 load () { 
@@ -32,6 +33,8 @@ if (text) {
   element.innerHTML = text;
 }
   }); 
+  document.getElementById('search').placeholder = `${translation.placeholder}`
+  
 }
 }
 export default Translator;

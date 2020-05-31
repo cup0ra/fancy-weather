@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 import '../css/style.css';
 import '../css/style.scss'; // require
 import {getLinkToImage,getWeather,getGeocode,getGeolocation} from './moduleAPI';
@@ -17,10 +19,11 @@ const backgroundDefault = "../img/background.jpg"
 let units = (localStorage.getItem('units') === null) ? 'metric' : localStorage.getItem('units');
 let language = (localStorage.getItem('language') === null) ? 'en' : localStorage.getItem('language');
 let searchCity = '';
-let coordinat = []
+let coordinate = []
 let lat = '';
 let lng = '';
 let isMIC = true;
+let isPLAY = true;
 let timeYear = '';
 let timeDay = ''
 
@@ -40,7 +43,6 @@ if (localStorage.getItem('units')) {
 }
 
 moment.locale(language)
-
   mapboxgl.accessToken = 'pk.eyJ1IjoiY3Vwb3JhIiwiYSI6ImNrYWZtMDIydzAwMGEyenNjaXA0bW5rYm4ifQ.j0iqe20xZuIiZVDuhq3IQQ';
   const map = new mapboxgl.Map({
   container: 'map',
@@ -49,6 +51,7 @@ moment.locale(language)
   zoom: 11, // starting zoom
   language:'en'
 });
+const marker = new mapboxgl.Marker()
 
  function getCity(time) {
   const city = time.results[0].formatted.split(',');
@@ -63,20 +66,37 @@ function dateTime() {
 }
 
 function timeYears(){
- const num = moment().format('M')  
-switch(+num){
-  case 12: case 1: case 2:
-    timeYear = 'winter'
-    break;
-  case 3: case 4: case 5:
-    timeYear = 'spring'
-    break;
-  case 6: case 7: case 8:
-    timeYear = 'summer'
-    break;
-  default:
-    timeYear = 'autumn'
-}
+ const num = moment().format('M') 
+ if(lat > 0){
+  switch(+num){
+    case 12: case 1: case 2:
+      timeYear = 'winter'
+      break;
+    case 3: case 4: case 5:
+      timeYear = 'spring'
+      break;
+    case 6: case 7: case 8:
+      timeYear = 'summer'
+      break;
+    default:
+      timeYear = 'autumn'
+  }
+ }else{
+  switch(+num){
+    case 12: case 1: case 2:
+      timeYear = 'summer'
+      break;
+    case 3: case 4: case 5:
+      timeYear = 'autumn'
+      break;
+    case 6: case 7: case 8:
+      timeYear = 'winter'
+      break;
+    default:
+      timeYear = 'spring'
+  }
+ }
+
 }
 function timeDays(){
   const timeZone =localStorage.getItem('timeZone')
@@ -102,7 +122,8 @@ async function showBackground(){
   getLinkToImage(timeYear,timeDay).then( async (img)=>{
     await checkImgSrc(img)
     document.querySelector('BODY').style=`background:url("${img}") center center no-repeat fixed;`
-  }).catch(error =>{
+  }).catch(() =>{
+    alert('limit is reached')
     BODY.style=`background:url("${backgroundDefault}");`
   })
 }
@@ -113,7 +134,7 @@ async function  showResults() {
       const result = +item;
       return result;
     });
-      coordinat = geolocation
+      coordinate = geolocation
     if(searchCity === ''){
       searchCity = data.city;     
     }
@@ -121,30 +142,37 @@ async function  showResults() {
       lat = time.results[0].geometry.lat;
       lng = time.results[0].geometry.lng;
       getWeather(lat,lng,language,units).then(result => {
-        coordinat = [result.lon,result.lat,];
+        coordinate = [result.lon,result.lat,];
         timeDays()
         timeYears()
         console.log('Season:',timeYear)
         console.log('Time of day:',timeDay)
         showBackground(searchCity)
         map.flyTo({
-          center: coordinat,
+          center: coordinate,
           speed: 1, 
           curve: 1,
           })
-        const marker = new mapboxgl.Marker().setLngLat(coordinat).addTo(map);
+        marker.remove()
+        marker.setLngLat(coordinate).addTo(map);
         WEATHER.innerHTML = showWeather(result)
         const translator = new Translator(language); 
         translator.load();
-        document.querySelector('.lat').innerHTML = lat;
-        document.querySelector('.lng').innerHTML = lng;
+        document.querySelector('.lat').innerHTML = time.results[0].annotations.DMS.lat
+        document.querySelector('.lng').innerHTML = time.results[0].annotations.DMS.lng;
+        localStorage.setItem('search', searchCity);
       })
       localStorage.setItem('timeZone',time.results[0].annotations.timezone.name)
       getCity(time)
       dateTime();
+    }).catch(() =>{
+      alert(`no result for ${searchCity}`)
+      INPUT.value = ''
+      searchCity = localStorage.getItem('search')
+
     })
-  }).catch(e=>{
-    alert(e)
+  }).catch(()=>{
+    alert(`no result for ${searchCity}`)
   })
   
 }
@@ -159,13 +187,11 @@ document.addEventListener('submit',(event) => {
   searchMovie ()
 })
 
-
 document.querySelector('#selector').addEventListener('change', function() {
   language = this.value;
   showResults()
   moment.locale(language)
   localStorage.setItem('language',language)
-  
 })
 
 document.querySelector('#scale').addEventListener('change', function() {
@@ -205,14 +231,18 @@ document.querySelector('.refresh-img').addEventListener('click',() => {
 })
 
 PLAY.addEventListener('click', () =>{
-  const message = `${document.querySelector('.temp').innerText  } 
-  ${  document.querySelector('.description').innerText} 
-  ${  document.querySelector('.feel').innerText}
-  ${  document.querySelector('.wind').innerText}
-  ${  document.querySelector('.humidity').innerText}`
-console.log(message)
+  if(isPLAY === true){
+
+  isPLAY =false
+  const message = `
+  ${document.querySelector('.city').innerText} 
+  ${document.querySelector('.temp').innerText} 
+  ${document.querySelector('.description').innerText} 
+  ${document.querySelector('.feel').innerText}
+  ${document.querySelector('.wind').innerText}
+  ${document.querySelector('.humidity').innerText}`
 if ( 'speechSynthesis' in window ) {
-  const speak = new SpeechSynthesisUtterance(message);
+  const speak = new window.SpeechSynthesisUtterance(message);
   const voices = window.speechSynthesis.getVoices();
   speak.lang = language
   if(speak.lang === 'be'){
@@ -220,12 +250,13 @@ if ( 'speechSynthesis' in window ) {
   }
       window.speechSynthesis.speak(speak);
   speak.addEventListener('end',() => {
+    isPLAY = true
     document.querySelector('.play').classList.remove('play-active')
     document.querySelector('.img').classList.remove('img-active')
   })
 }
 document.querySelector('.play').classList.add('play-active')
 document.querySelector('.img').classList.add('img-active')
-
+  }
 })
 

@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  
     <title>Fancy Weather</title>
     <link rel="stylesheet" href="style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -14,27 +13,29 @@
     
 </head>
 
-<body>
+<body class="body">
+    <div class="wrapper">
     <header class="header">
       <div class="control-panel">
-        <select class="select-control language-selector" id="selector">
+          <div class="refresh-img"></div>
+        <select class="select-control language-selector" id="selector" >
             <option value="en">En</option>
             <option value="be">Be</option>
             <option value="ru">Ru</option>
         </select>
-        <select class="select-control scale-selector" id="scale">
+        <select class="select-control scale-selector" id="scale" >
             <option value="metric">°C</option>
             <option value="imperial">°F</option>
         </select>
+        <div class="play" id="play"><div class="img"></div></div>
       </div>
     <form class="search" action="">
       
-        <div class="input-container">
         <input class="search-input" id="search" type="text" x-webkit-speech placeholder="Search city" autofocus="" autocomplete="off"/>
-        <span class="clear" id="clear"></span>
-        <span class="mic"></span>
-        </div>  
-        <button class="button-search" id="button-search" type="submit" value="Search" >Search</button>
+
+        <div class="mic"><div class="mic-img"></div></div>
+       
+        <button class="button-search" id="button-search" type="submit" value="Search" data-i18n="search">Search</button>
     </form>
 </header>
 <main>
@@ -43,13 +44,18 @@
     <div class="time" id="time"></div>
     <div class="weather" id="weather"></div>
     </div>
-    <div class="container-map"><div id='map' style='width: 400px; height: 300px;'></div></div>
+    <div class="container-map">
+        <div id='map' style='width: 400px; height: 300px;'></div>
+        <div class="location">
+            <p><span data-i18n="lat"></span> <span class="lat"></span></p>
+            <p><span data-i18n="lng"></span> <span class="lng"></span></p>
+        </div>
+        
+    </div>
   
 </main>
-<script>
- 
-</script>
 
+</div>
 </body>
 
 </html>

@@ -10,8 +10,8 @@
     "January", "February", "March", "April", "May", "June", "July", "August", "September", 
     "October", "November", "December"
   ],
-  "lat": "Latitude",
-  "lng": "Longitude",
+  "lat": "Latitude:",
+  "lng": "Longitude:",
   "wether": {
     "200": "Thunderstorm with light rain",
     "201": "Thunderstorm with rain",
