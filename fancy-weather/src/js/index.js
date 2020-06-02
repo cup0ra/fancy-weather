@@ -5,6 +5,7 @@ import '../css/style.scss'; // require
 import {getLinkToImage,getWeather,getGeocode,getGeolocation} from './moduleAPI';
 import Translator from './translator';
 import showWeather from './showWeather'
+import showTicker from './showTicker'
 
 const moment = require('moment-timezone');
 
@@ -25,7 +26,8 @@ let lng = '';
 let isMIC = true;
 let isPLAY = true;
 let timeYear = '';
-let timeDay = ''
+let timeDay = '';
+let errorMassage = ''
 
 if (localStorage.getItem('language')) {
   const savedValue = localStorage.getItem('language');
@@ -42,13 +44,15 @@ if (localStorage.getItem('units')) {
   }
 }
 
+
+BODY.addEventListener('click', () => undefined)
 moment.locale(language)
   mapboxgl.accessToken = 'pk.eyJ1IjoiY3Vwb3JhIiwiYSI6ImNrYWZtMDIydzAwMGEyenNjaXA0bW5rYm4ifQ.j0iqe20xZuIiZVDuhq3IQQ';
   const map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
-  center:[0,0], // starting position [lng, lat]
-  zoom: 11, // starting zoom
+  style: 'mapbox://styles/mapbox/streets-v11',
+  center:[0,0], 
+  zoom: 11, 
   language:'en'
 });
 const marker = new mapboxgl.Marker()
@@ -61,7 +65,7 @@ const marker = new mapboxgl.Marker()
 
 function dateTime() { 
   const timeZone =localStorage.getItem('timeZone')
-  document.getElementById('time').innerHTML = moment().tz(timeZone).format('LLLL');
+  document.getElementById('time').innerHTML = moment().tz(timeZone).format('dddd Do MMM YYYY HH:mm:ss ');
   setTimeout(function () { dateTime(); }, 1000);
 }
 
@@ -117,16 +121,33 @@ const checkImgSrc = src => {
   })
 } 
  
+function showError(){
+  const errors = document.createElement('div');
+  errors.id = 'error';
+  errors.className = 'error'
+  errors.innerHTML = `<p class="error-massage">${errorMassage}</p>`
+  BODY.append(errors)
+  setTimeout(()=>{
+    BODY.lastElementChild.remove()
+  },4000)
+}
  
 async function showBackground(){
   getLinkToImage(timeYear,timeDay).then( async (img)=>{
     await checkImgSrc(img)
     document.querySelector('BODY').style=`background:url("${img}") center center no-repeat fixed;`
-  }).catch(() =>{
-    alert('limit is reached')
+  }).catch((error) =>{
+    console.log(error.message)
+    if(error.message === 'Unexpected token R in JSON at position 0'){
+     errorMassage ='api.unsplash.com limit is reached, come in an hour'
+     showError()
+    }
+   
     BODY.style=`background:url("${backgroundDefault}");`
   })
 }
+
+
 
 async function  showResults() {
  await getGeolocation().then(data => {
@@ -147,7 +168,7 @@ async function  showResults() {
         timeYears()
         console.log('Season:',timeYear)
         console.log('Time of day:',timeDay)
-        showBackground(searchCity)
+        showBackground()
         map.flyTo({
           center: coordinate,
           speed: 1, 
@@ -158,25 +179,40 @@ async function  showResults() {
         WEATHER.innerHTML = showWeather(result)
         const translator = new Translator(language); 
         translator.load();
-        document.querySelector('.lat').innerHTML = time.results[0].annotations.DMS.lat
-        document.querySelector('.lng').innerHTML = time.results[0].annotations.DMS.lng;
+        showTicker(result)
+        document.querySelector('.lat').innerHTML = `${time.results[0].annotations.DMS.lat.split(' ').splice(0,2).join(' ')} ${time.results[0].annotations.DMS.lat.split(' ').splice(-1).join(' ')}`
+        document.querySelector('.lng').innerHTML = `${time.results[0].annotations.DMS.lng.split(' ').splice(0,2).join(' ')} ${time.results[0].annotations.DMS.lng.split(' ').splice(-1).join(' ')}`
+        
         localStorage.setItem('search', searchCity);
       })
       localStorage.setItem('timeZone',time.results[0].annotations.timezone.name)
       getCity(time)
       dateTime();
-    }).catch(() =>{
-      alert(`no result for ${searchCity}`)
+    }).catch((error) =>{
+      if(error.message === "Cannot read property 'geometry' of undefined"){
+        errorMassage =`no result for "${searchCity}"`
+        showError()
+      }
       INPUT.value = ''
       searchCity = localStorage.getItem('search')
-
     })
-  }).catch(()=>{
-    alert(`no result for ${searchCity}`)
-  })
+  }).catch(error => {
+    if(error.message === 'Failed to fetch'){
+     errorMassage = 'No internet connection'
+    }  if(error.message === "Cannot read property 'geometry' of undefined"){
+      errorMassage =`no result for "${searchCity}"`
+    }
+    else{
+    errorMassage = error.message   }
+    showError()
+  }
+    
+  )
   
 }
 showResults()
+
+
 
 function searchMovie(){
   searchCity = INPUT.value
@@ -211,7 +247,9 @@ recognition.onresult = (event) => {
 }
 
 recognition.addEventListener('end',() => { 
-  searchMovie()
+  if(INPUT.value.length !== 0){
+    searchMovie()
+  }
   document.querySelector('.mic-img').classList.remove('mic-img-active')
   MICROPHONE.classList.remove('mic-active')
   isMIC = true
@@ -225,6 +263,7 @@ MICROPHONE.addEventListener('click',() => {
     MICROPHONE.classList.add('mic-active')
     isMIC = false
   }
+ 
 })
 document.querySelector('.refresh-img').addEventListener('click',() => {
   showBackground(searchCity)
@@ -258,5 +297,6 @@ if ( 'speechSynthesis' in window ) {
 document.querySelector('.play').classList.add('play-active')
 document.querySelector('.img').classList.add('img-active')
   }
+  
 })
 

@@ -17,7 +17,7 @@
     <div class="wrapper">
     <header class="header">
       <div class="control-panel">
-          <div class="refresh-img"></div>
+          <a class="refresh-img" onclick=""></a>
         <select class="select-control language-selector" id="selector" >
             <option value="en">En</option>
             <option value="be">Be</option>
@@ -27,21 +27,23 @@
             <option value="metric">°C</option>
             <option value="imperial">°F</option>
         </select>
-        <div class="play" id="play"><div class="img"></div></div>
+        <a class="play" id="play" onclick=""><div class="img"></div></a>
       </div>
     <form class="search" action="">
       
         <input class="search-input" id="search" type="text" x-webkit-speech placeholder="Search city" autofocus="" autocomplete="off"/>
 
-        <div class="mic"><div class="mic-img"></div></div>
+        <a class="mic" onclick=""><div class="mic-img"></div></a>
        
         <button class="button-search" id="button-search" type="submit" value="Search" data-i18n="search">Search</button>
     </form>
 </header>
 <main>
     <div class="container-weather">
+    <div class="city-time"  >  
     <div class="city" id="city"></div>
     <div class="time" id="time"></div>
+    </div>
     <div class="weather" id="weather"></div>
     </div>
     <div class="container-map">
@@ -56,6 +58,7 @@
 </main>
 
 </div>
+<footer id="footer"></footer>
 </body>
 
 </html>
