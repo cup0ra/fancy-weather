@@ -14,27 +14,25 @@
 </head>
 
 <body class="body">
-    <div class="wrapper">
+    <div class="wrapper hidden">
     <header class="header">
       <div class="control-panel">
-          <a class="refresh-img" onclick=""></a>
+          <button class="refresh-img" onclick=""></button>
         <select class="select-control language-selector" id="selector" >
             <option value="en">En</option>
             <option value="be">Be</option>
             <option value="ru">Ru</option>
         </select>
         <select class="select-control scale-selector" id="scale" >
-            <option value="metric">°C</option>
+            <option value="metric">°C</option> 
             <option value="imperial">°F</option>
         </select>
         <a class="play" id="play" onclick=""><div class="img"></div></a>
+        <a class="speak" id="speak"><div class="img-speak"  data-tooltip="Голосовое управление:   EN - weather,louder,quieter; RU,BE - погода,громче,тише"></div></a>
       </div>
     <form class="search" action="">
-      
-        <input class="search-input" id="search" type="text" x-webkit-speech placeholder="Search city" autofocus="" autocomplete="off"/>
-
+        <input class="search-input" id="search" type="text"  placeholder="Search city" autofocus="" autocomplete="off"/>
         <a class="mic" onclick=""><div class="mic-img"></div></a>
-       
         <button class="button-search" id="button-search" type="submit" value="Search" data-i18n="search">Search</button>
     </form>
 </header>
@@ -58,7 +56,7 @@
 </main>
 
 </div>
-<footer id="footer"></footer>
-</body>
 
+</body>
+<footer id="footer"></footer>
 </html>

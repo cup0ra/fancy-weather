@@ -8,6 +8,7 @@ export  async function getLinkToImage(timeYear,timeDay) {
     const url = `https://api.unsplash.com/photos/random?orientation=landscape&per_page=1&query=${timeYear} ${timeDay}&auto=format&client_id=${KEY_UNSPLASH}`;
     const res = await fetch(url);
     const data = await res.json();
+    
     return data.urls.regular
   }
 
@@ -16,6 +17,7 @@ export  async function getLinkToImage(timeYear,timeDay) {
     const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lt}&lon=${lg}&lang=${language}&units=${units}&exclude={part}&appid=${KEY_OPEN_WEATHER_MAP}`;
     const res = await fetch(url);
     const data = await res.json();
+   
     return data
   }
   
